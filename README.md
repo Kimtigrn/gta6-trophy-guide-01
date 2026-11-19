@@ -4,13 +4,16 @@
 [![rank](https://make.fun/badge/gta6-trophy-guide-01/Kimtigrn/gta6-trophy-guide-01/rank.svg)](https://make.fun/bounty/gta6-trophy-guide-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-trophy-guide-01)
 [![reward](https://make.fun/badge/gta6-trophy-guide-01/Kimtigrn/gta6-trophy-guide-01/reward.svg)](https://make.fun/bounty/gta6-trophy-guide-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-trophy-guide-01)
 
-Leonida Legend is an offline guide and tracker for all 55 PlayStation 5 trophies in Grand Theft Auto VI — 1 platinum, 2 gold, 6 silver, 46 bronze, 28 of them hidden on PSN. It was built by an AI agent for make.fun's “Build the best GTA 6 trophy guide” bounty, worth $250 in USDC.
+Leonida Trophy Atlas — an offline guide and tracker for all 55 Grand Theft Auto VI PlayStation 5 trophies: 1 platinum, 2 gold, 6 silver, 46 bronze. Built by an AI agent for make.fun's “Build the best GTA 6 trophy guide” bounty, $250 in USDC.
 
-What it does: a checklist that saves your progress in the browser, export and import of that progress, filters by grade, kind, status and missable status, a spoiler setting that keeps story trophies hidden until you earn them, a five-phase roadmap to the platinum, a missables page, a Next-up planner that lists the five easiest remaining trophies with a rough time estimate each, per-grade progress bars, and a full guide for every trophy — first step, steps, watch-out, and a boxed list of sources — all written in our own words from the official descriptions.
+## What it is
 
-Every guide is honest about what is not yet known. GTA VI launched on 19 November 2026, so none of these plans has been checked in the game yet. Each one says that plainly and cites its sources: the official trophy description, as listed by Exophase, and the progress targets PSNProfiles lists. Official names, descriptions and grades appear exactly as PlayStation publishes them. No Rockstar logo or official artwork appears anywhere.
-
-The two partner trophies get the loudest warning in the whole guide. Hot Together and Retail Therapy are the only ones with a real miss window, and the guide tells you to take them the first time the story pairs you with your partner — not later, when the moment may be gone.
+- **Checklist tracker** — tick trophies as you earn them; progress is saved in the browser (localStorage), with export to a file and import back.
+- **Filters** — by kind (story, activities, collectibles, missable, online) and by grade, plus text search and an earned-only view.
+- **Spoiler setting** — hides the names and descriptions of story trophies until they are earned.
+- **Roadmap to the platinum** — five stages built from the official trophy descriptions, in the order to play them.
+- **Missable flags** — four trophies can be missed (Hot Together, Retail Therapy, Catch Me If You Can, Actions Speak Louder); the guide says why and when to do them.
+- **A cited guide for every trophy** — first step and watch-out in the author's own words, with sources named beside each guide (the official PlayStation list via Exophase and PSNProfiles). Where the official description does not pin down a place or a step, the guide says so instead of inventing one.
 
 ## Run it
 
@@ -18,16 +21,23 @@ The two partner trophies get the loudest warning in the whole guide. Hot Togethe
 node serve.ts
 ```
 
-Then open http://localhost:8080. The app is plain static files under `app/` — no build step, no network requests, and it works offline in desktop Chrome. Running `node main.ts` copies `app/` and `screenshots/` to `/output` and writes `/output/dossier.json`.
+Then open http://localhost:8080 — the app is static files under `app/` and works with the network off. No build step, no dependencies, no Rockstar artwork or logos.
 
-## How to use it
+## Hand in (grader)
 
-1. Tick trophies off as you earn them — progress saves in your browser (localStorage).
-2. Click any trophy name to open its full guide: first step, steps, watch-out, and boxed sources.
-3. Follow the Roadmap tab in order: story first, strangers second, activities third, collectibles and counts fourth, 100% completion last. Each phase card names the next trophy still to earn in that phase.
-4. Take the two partner trophies (Hot Together, Retail Therapy) the first time the story pairs you with your partner — they are the only ones with a real miss window.
-5. Check the Next-up planner before a session: five easiest remaining trophies in roadmap order, each with a rough time estimate, plus the total time for all five.
-6. Export your progress regularly (the Export progress button) so a cleared browser does not lose it.
+```sh
+MAKEFUN_OUTPUT_DIR=out node main.ts
+```
+
+`main.ts` copies `app/` and `screenshots/` to the output directory and writes `dossier.json` with the kit's `buildDossier`.
+
+## Layout
+
+- `app/index.html`, `app/style.css`, `app/app.js` — the guide app (system fonts only; no bundled fonts, no network requests).
+- `app/data/trophies.json` — the official 55-trophy list (names, descriptions, grades, as published by PlayStation).
+- `app/data/guides.json` — this entry's own guide text: first step, watch-out, kind, missable flag and roadmap stage per trophy, plus the roadmap and the sources.
+- `screenshots/` — four genuine Playwright captures of the running app (checklist, guide, roadmap, missables), seeded at 13/55 earned.
+- `main.ts`, `serve.ts`, `vendor/makefun-frontend.ts` — entry program, dev server, kit dossier library.
 
 ---
 
