@@ -16,10 +16,11 @@
     <p id="progressText" class="big">0 of 55 earned</p>
     <div class="bar" aria-label="progress"><div id="progressBar"></div></div>
     <p id="gradeCounts" class="muted"></p>
+    <div id="gradeBars" aria-label="Progress by grade"></div>
   </div>
 </header>
 <p class="notice"><strong>Read this first:</strong> GTA VI launched 19 November 2026, so nothing here has been checked in the game yet. Each plan is our own advice built from the trophy's official description and the progress targets PSNProfiles lists — never copied from another guide. Where a step cannot be verified in-game yet, the guide says so. Official names, descriptions and grades appear exactly as PlayStation publishes them, with sources cited beside each trophy (the Exophase trophy list; the PSNProfiles trophy list).</p>
-<p class="hint">How it works: tick trophies off as you earn them, click any trophy name for its full guide, and follow the Roadmap tab in order. Press <kbd>/</kbd> to jump to search. Progress stays in this browser only.</p>
+<p class="hint">How it works: tick trophies off as you earn them, click any trophy name for its full guide — every guide opens with a concrete first step, then its steps, a watch-out line, and a boxed list of its sources. Follow the Roadmap tab in order. Press <kbd>/</kbd> to jump to search. Progress stays in this browser only.</p>
 <nav class="tabs" aria-label="Views">
   <button data-view="checklist" type="button">Checklist</button>
   <button data-view="guide" type="button">Guide</button>
@@ -44,7 +45,7 @@
   <section id="view-checklist" class="view">
     <p id="listMeta" class="muted"></p>
     <table>
-      <thead><tr><th>Earned</th><th>Trophy</th><th>Grade</th><th>Kind</th><th>Target</th><th>Guide (short)</th></tr></thead>
+      <thead><tr><th>Earned</th><th>Trophy</th><th>Grade</th><th>Kind</th><th>Target</th><th>Effort</th><th>Guide (short)</th></tr></thead>
       <tbody id="rows"></tbody>
     </table>
   </section>
@@ -54,7 +55,7 @@
   </section>
   <section id="view-roadmap" class="view" hidden>
     <h2>Roadmap to the platinum</h2>
-    <p class="muted">Take the phases in order. Story first — nothing there needs grinding. Then strangers and side missions, then activities, then the long collectible and count grinds, with 100% completion last, since it feeds on almost everything else.</p>
+    <p class="muted">Take the phases in order. Story first — nothing there needs grinding. Then strangers and side missions, then activities, then the long collectible and count grinds, with 100% completion last, since it feeds on almost everything else. Each phase card names the next trophy still to earn in that phase.</p>
     <div id="roadmap"></div>
   </section>
   <section id="view-missables" class="view" hidden>
@@ -64,12 +65,12 @@
   </section>
   <section id="view-planner" class="view" hidden>
     <h2>Next up — your planner</h2>
-    <p class="muted">The five easiest remaining trophies for where you are right now, in the order to take them. Earned trophies are skipped; the list refreshes as you tick things off.</p>
+    <p class="muted">The five easiest remaining trophies for where you are right now, in roadmap order, each with a rough time estimate so you can plan a session around them. Earned trophies are skipped; the list refreshes as you tick things off.</p>
     <ol id="planner"></ol>
   </section>
 </main>
 <footer class="muted">
-  <p>Official trophy names, descriptions and grades: PlayStation, via the Exophase trophy list and PSNProfiles. Counts (250 stunts, 42 shooting-range challenges, 14 drone locations, 18 meditation spots, 100 WAiNK spots, 52 areas, 9 gangs, 8 garages, 500 choices) are the PSN progress targets. No Rockstar logo or official artwork appears here; the look is our own. Progress lives in your browser (localStorage) and leaves the machine only through Export.</p>
+  <p>Official trophy names, descriptions and grades: PlayStation, via the Exophase trophy list and PSNProfiles. Counts (250 stunts, 42 shooting-range challenges, 14 drone locations, 18 meditation spots, 100 WAiNK spots, 52 areas, 9 gangs, 8 garages, 500 choices) are the PSN progress targets. Time estimates in the planner are rough guides only, not promises. No Rockstar logo or official artwork appears here; the look is our own. Progress lives in your browser (localStorage) and leaves the machine only through Export.</p>
 </footer>
 <script src="app.js" type="module"></script>
 </body>

@@ -1,8 +1,10 @@
-// Leonida Legend — GTA VI trophy guide & tracker.
-// A plain static app: it fetches data/trophies.json (the official 55) and
-// data/guides.json (the guides written for this entry), keeps progress in
-// localStorage, and never talks to the network. Rewritten 2026-11-19 under
-// recording 01a1f3cb with a state object and renamed renderers.
+// Leonida Legend — GTA VI trophy guide & tracker, round 2.
+// Static app: fetches data/trophies.json (the official 55) and
+// data/guides.json (guides written for this entry), saves progress in
+// localStorage, never touches the network. Round 2 adds per-grade progress
+// bars, a planner that estimates the time each next trophy takes, and a
+// guide pane that shows a concrete first step and a watch-out line beside
+// the sources for every trophy.
 const STORE = {
   earned: 'gta6-trophy-earned-v1',
   notes: 'gta6-trophy-notes-v1',
@@ -12,6 +14,11 @@ const SEED_IDS = [2, 3, 4, 5, 8, 16, 20, 21, 44, 46, 53, 55, 15];
 const query = new URLSearchParams(location.search);
 const el = (id) => document.getElementById(id);
 
+// Rough time cost per trophy, for the planner only — minutes, not a promise.
+const EFFORT_MINUTES = { Short: 15, Medium: 60, 'Long grind': 240 };
+const EFFORT_ORDER = { Short: 0, Medium: 1, 'Long grind': 2 };
+const GRADES = ['platinum', 'gold', 'silver', 'bronze'];
+
 const trophyDoc = await (await fetch('data/trophies.json')).json();
 const guideDoc = await (await fetch('data/guides.json')).json();
 const allTrophies = trophyDoc.trophies;
@@ -19,7 +26,7 @@ const guideBook = guideDoc.guides;
 const lookup = new Map(allTrophies.map((t) => [t.id, t]));
 const guideFor = (t) => guideBook[String(t.id)] || {
   kind: 'misc', phase: 5, missable: false, missable_note: '', target: '',
-  effort: 'Medium', guide: t.guide, steps: [],
+  effort: 'Medium', guide: t.guide, steps: [], first_step: '', watch_out: '',
   sources: ['Official trophy description — PlayStation (via Exophase trophy list)'],
 };
 
@@ -28,7 +35,7 @@ const state = {
   notes: JSON.parse(localStorage.getItem(STORE.notes) ?? '{}'),
   settings: JSON.parse(localStorage.getItem(STORE.settings) ?? '{}'),
   view: query.get('view') || 'checklist',
-  picked: Number(query.get('trophy') || 17),
+  picked: Number(query.get('trophy') || 33),
 };
 
 const persist = {
@@ -58,11 +65,16 @@ const PHASES = [
   { n: 1, title: 'Phase 1 — Story first', text: 'Chapters 1–4 and the finale, plus the named story missions. No grinding lives here. While the story pairs you with your partner, grab the two partner trophies (Hot Together, Retail Therapy) — they carry the only real miss window.' },
   { n: 2, title: 'Phase 2 — Strangers & side missions', text: 'The five contact strands (Andy, Kenton, Billy, Randy, Tyrone), the other strangers, Bret’s hunt, and the one-offs: the VCIA departure, the armored truck, the showroom smash, the Ocean Beach cocktail.' },
   { n: 3, title: 'Phase 3 — Activities & skills', text: 'Shooting Range golds, drone races, street races, fishing against Cal, arcade, bowling, stunts, Combat Focus, the melee drive-by, and the second-try trophy. Short, repeatable, skill-based.' },
-  { n: 4, title: 'Phase 4 — Collectibles & counts', text: 'The long sweeps: cards, WAiNK spots, meditation spots, 52 areas, 100 vehicles, bank vaults, gang operations, marked-bill laundering, shop spending, garages, Scooter Bros registrations, 50 challenges.' },
-  { n: 5, title: 'Phase 5 — Cleanup & platinum', text: 'Choices to 500, 100% completion, then the platinum. 100% needs nearly everything else finished, so it sits last on purpose.' },
+  { n: 4, title: 'Phase 4 — Collectibles & counts', text: 'The long sweeps: cards, WAiNK spots, meditation spots, exploring Leonida, 100 vehicles, bank vaults, gang operations, marked-bill laundering, shop spending, garages, Scooter Bros registrations, 50 challenges.' },
+  { n: 5, title: 'Phase 5 — Cleanup & platinum', text: '100% completion, then the platinum. 100% needs nearly everything else finished, so it sits last on purpose.' },
 ];
 
-const EFFORT_ORDER = { Short: 0, Medium: 1, 'Long grind': 2 };
+function fmtMinutes(m) {
+  if (m < 60) return `≈${m} min`;
+  const h = Math.floor(m / 60);
+  const rest = m % 60;
+  return rest ? `≈${h} h ${rest} min` : `≈${h} h`;
+}
 
 function paintHeader() {
   const total = allTrophies.length;
@@ -72,11 +84,30 @@ function paintHeader() {
   document.title = state.earned.size === total
     ? 'Leonida Legend — Platinum earned!'
     : `Leonida Legend — ${state.earned.size}/55 trophies (${pct}%)`;
-  el('gradeCounts').textContent = ['platinum', 'gold', 'silver', 'bronze'].map((g) => {
+  el('gradeCounts').textContent = GRADES.map((g) => {
     const all = allTrophies.filter((t) => t.grade === g).length;
     const got = allTrophies.filter((t) => t.grade === g && state.earned.has(t.id)).length;
     return `${g} ${got}/${all}`;
   }).join(' · ') + ' · 55 total (1 platinum, 2 gold, 6 silver, 46 bronze) · 28 hidden on PSN';
+  // Per-grade summary bars: one thin bar per grade so the split is visible.
+  const bars = el('gradeBars');
+  bars.replaceChildren();
+  for (const g of GRADES) {
+    const all = allTrophies.filter((t) => t.grade === g);
+    const got = all.filter((t) => state.earned.has(t.id)).length;
+    const row = document.createElement('div');
+    row.className = 'gradebar';
+    const label = document.createElement('span');
+    label.textContent = `${g} ${got}/${all.length}`;
+    const track = document.createElement('div');
+    track.className = 'gtrack';
+    const fill = document.createElement('div');
+    fill.className = `gfill ${g}`;
+    fill.style.width = `${all.length ? Math.round((got / all.length) * 100) : 0}%`;
+    track.append(fill);
+    row.append(label, track);
+    bars.append(row);
+  }
 }
 
 function visibleList() {
@@ -96,7 +127,8 @@ function visibleList() {
     return t.name.toLowerCase().includes(q)
       || t.description.toLowerCase().includes(q)
       || gd.guide.toLowerCase().includes(q)
-      || (gd.target || '').toLowerCase().includes(q);
+      || (gd.target || '').toLowerCase().includes(q)
+      || (gd.first_step || '').toLowerCase().includes(q);
   });
 }
 
@@ -154,6 +186,9 @@ function paintList() {
     const targetCell = document.createElement('td');
     targetCell.textContent = gd.target || '—';
     tr.append(targetCell);
+    const effortCell = document.createElement('td');
+    effortCell.textContent = gd.effort;
+    tr.append(effortCell);
     const shortCell = document.createElement('td');
     shortCell.textContent = t.guide;
     tr.append(shortCell);
@@ -181,7 +216,7 @@ function paintGuide() {
   panel.append(heading);
   const meta = document.createElement('p');
   meta.className = 'meta';
-  meta.textContent = `#${t.id} · ${t.grade} · ${gd.kind} · Roadmap phase ${gd.phase} · Effort: ${gd.effort}`
+  meta.textContent = `#${t.id} · ${t.grade} · ${gd.kind} · Roadmap phase ${gd.phase} · Effort: ${gd.effort} (${fmtMinutes(EFFORT_MINUTES[gd.effort] ?? 60)})`
     + (gd.target ? ` · PSN target: ${gd.target}` : '')
     + (state.earned.has(t.id) ? ' · ✓ Earned' : ' · Not earned yet');
   panel.append(meta);
@@ -194,6 +229,16 @@ function paintGuide() {
     warn.className = 'flag';
     warn.textContent = `⚠ Missable: ${gd.missable_note}`;
     panel.append(warn);
+  }
+  // First step: the one concrete action that starts this trophy.
+  if (gd.first_step) {
+    const firstHeading = document.createElement('h3');
+    firstHeading.textContent = 'First step';
+    panel.append(firstHeading);
+    const first = document.createElement('p');
+    first.className = 'firststep';
+    first.textContent = gd.first_step;
+    panel.append(first);
   }
   const guideHeading = document.createElement('h3');
   guideHeading.textContent = 'Guide';
@@ -213,10 +258,34 @@ function paintGuide() {
     }
     panel.append(list);
   }
-  const sourceLine = document.createElement('p');
-  sourceLine.className = 'src';
-  sourceLine.textContent = `Sources: ${gd.sources.join(' · ')}. The guide above is our own words, written for this entry; the official name and description are quoted as published. GTA VI launched 19 Nov 2026 — this plan follows the official description and is not yet play-verified.`;
-  panel.append(sourceLine);
+  // Watch out: the mistake or trap most likely to cost a retry — or the window.
+  if (gd.watch_out) {
+    const watchHeading = document.createElement('h3');
+    watchHeading.textContent = 'Watch out';
+    panel.append(watchHeading);
+    const watch = document.createElement('p');
+    watch.className = 'watchout';
+    watch.textContent = gd.watch_out;
+    panel.append(watch);
+  }
+  // Sources, boxed and always visible: no claim in this guide stands unsourced.
+  const sourceBox = document.createElement('aside');
+  sourceBox.className = 'srcbox';
+  const sourceTitle = document.createElement('h3');
+  sourceTitle.textContent = 'Sources';
+  sourceBox.append(sourceTitle);
+  const sourceList = document.createElement('ul');
+  for (const s of gd.sources) {
+    const item = document.createElement('li');
+    item.textContent = s;
+    sourceList.append(item);
+  }
+  sourceBox.append(sourceList);
+  const sourceNote = document.createElement('p');
+  sourceNote.className = 'src';
+  sourceNote.textContent = 'The guide above is our own words, written for this entry; the official name and description are quoted as published. GTA VI launched 19 Nov 2026 — this plan follows the official description and is not yet play-verified.';
+  sourceBox.append(sourceNote);
+  panel.append(sourceBox);
   const notesHeading = document.createElement('h3');
   notesHeading.textContent = 'Your notes';
   panel.append(notesHeading);
@@ -243,6 +312,9 @@ function paintRoadmap() {
   const wrap = el('roadmap');
   wrap.replaceChildren();
   for (const ph of PHASES) {
+    const inPhase = allTrophies.filter((x) => guideFor(x).phase === ph.n);
+    const done = inPhase.filter((x) => state.earned.has(x.id)).length;
+    const next = inPhase.find((x) => !state.earned.has(x.id));
     const card = document.createElement('div');
     card.className = 'phase';
     const heading = document.createElement('h3');
@@ -253,18 +325,17 @@ function paintRoadmap() {
     card.append(blurb);
     const chips = document.createElement('div');
     chips.className = 'chips';
-    for (const t of allTrophies.filter((x) => guideFor(x).phase === ph.n)) {
+    for (const t of inPhase) {
       const chip = document.createElement('span');
       chip.className = 'chip' + (state.earned.has(t.id) ? ' done' : '');
       chip.textContent = `${state.earned.has(t.id) ? '✓ ' : ''}${shownName(t)} (${t.grade})`;
       chips.append(chip);
     }
     card.append(chips);
-    const done = allTrophies.filter((x) => guideFor(x).phase === ph.n && state.earned.has(x.id)).length;
-    const total = allTrophies.filter((x) => guideFor(x).phase === ph.n).length;
     const count = document.createElement('p');
     count.className = 'muted';
-    count.textContent = `${done} of ${total} earned in this phase.`;
+    count.textContent = `${done} of ${inPhase.length} earned in this phase`
+      + (next ? ` · Next: ${shownName(next)} (${guideFor(next).effort}).` : ' · Phase complete.');
     card.append(count);
     wrap.append(card);
   }
@@ -283,6 +354,10 @@ function paintMissables() {
     const note = document.createElement('p');
     note.textContent = gd.missable_note;
     card.append(note);
+    const first = document.createElement('p');
+    first.className = 'firststep';
+    first.textContent = `First step: ${gd.first_step}`;
+    card.append(first);
     const src = document.createElement('p');
     src.className = 'src';
     src.textContent = `Official description: “${t.description}” · Source: ${gd.sources.join(' · ')}`;
@@ -296,6 +371,8 @@ function paintMissables() {
 }
 
 function paintPlanner() {
+  // Next-up: remaining trophies ordered by roadmap phase, then by effort,
+  // each with its estimated time so a session can be planned around it.
   const remaining = allTrophies.filter((t) => !state.earned.has(t.id));
   remaining.sort((a, b) => {
     const pa = guideFor(a).phase, pb = guideFor(b).phase;
@@ -304,23 +381,30 @@ function paintPlanner() {
   });
   const list = el('planner');
   list.replaceChildren();
-  for (const t of remaining.slice(0, 5)) {
+  const top = remaining.slice(0, 5);
+  let totalMinutes = 0;
+  for (const t of top) {
     const gd = guideFor(t);
+    totalMinutes += EFFORT_MINUTES[gd.effort] ?? 60;
     const item = document.createElement('li');
     const bold = document.createElement('strong');
     bold.textContent = shownName(t);
-    item.append(bold, ` — ${t.grade}, ${gd.kind}, phase ${gd.phase}, ${gd.effort}. `);
+    item.append(bold, ` — ${t.grade}, ${gd.kind}, phase ${gd.phase}, ${gd.effort} (${fmtMinutes(EFFORT_MINUTES[gd.effort] ?? 60)}). `);
     const why = document.createElement('span');
     why.className = 'why';
-    why.textContent = gd.guide.split('.')[0] + '.';
+    why.textContent = `${gd.first_step || gd.guide.split('.')[0] + '.'}`;
     item.append(why);
     list.append(item);
   }
-  if (!remaining.length) {
-    const item = document.createElement('li');
-    item.textContent = 'Everything is earned — the platinum should have popped. Leonida Legend!';
-    list.append(item);
-  }
+  const summary = document.createElement('p');
+  summary.id = 'plannerSummary';
+  summary.className = 'muted';
+  summary.textContent = top.length
+    ? `These five together: ${fmtMinutes(totalMinutes)} of play, roughly. ${remaining.length} trophies still to earn.`
+    : 'Everything is earned — the platinum should have popped. Leonida Legend!';
+  // Replace, never accumulate: paintPlanner runs on every tick of a box.
+  document.getElementById('plannerSummary')?.remove();
+  list.after(summary);
 }
 
 function show(v) {
