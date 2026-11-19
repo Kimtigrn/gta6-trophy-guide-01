@@ -1,319 +1,405 @@
-// Leonida Legend — GTA VI trophy guide & tracker (written for this entry).
-// Static, offline, no network: loads data/trophies.json (official list) and
-// data/guides.json (guides written for this entry), saves progress in localStorage.
-// Re-authored 2026-11-19 under recording 01a1f3cb: progress now also shows in the
-// document title, and pressing "/" focuses the search box.
-const EARNED_KEY = 'gta6-trophy-earned-v1';
-const NOTES_KEY = 'gta6-trophy-notes-v1';
-const SETTINGS_KEY = 'gta6-trophy-settings-v1';
+// Leonida Legend — GTA VI trophy guide & tracker.
+// A plain static app: it fetches data/trophies.json (the official 55) and
+// data/guides.json (the guides written for this entry), keeps progress in
+// localStorage, and never talks to the network. Rewritten 2026-11-19 under
+// recording 01a1f3cb with a state object and renamed renderers.
+const STORE = {
+  earned: 'gta6-trophy-earned-v1',
+  notes: 'gta6-trophy-notes-v1',
+  settings: 'gta6-trophy-settings-v1',
+};
 const SEED_IDS = [2, 3, 4, 5, 8, 16, 20, 21, 44, 46, 53, 55, 15];
-const params = new URLSearchParams(location.search);
-const $ = (id) => document.getElementById(id);
+const query = new URLSearchParams(location.search);
+const el = (id) => document.getElementById(id);
 
-const trophiesDoc = await (await fetch('data/trophies.json')).json();
-const guidesDoc = await (await fetch('data/guides.json')).json();
-const trophies = trophiesDoc.trophies;
-const guides = guidesDoc.guides;
-const byId = new Map(trophies.map((t) => [t.id, t]));
-const guideOf = (t) => guides[String(t.id)] || { kind: 'misc', phase: 5, missable: false, missable_note: '', target: '', effort: 'Medium', guide: t.guide, steps: [], sources: ['Official trophy description — PlayStation (via Exophase trophy list)'] };
+const trophyDoc = await (await fetch('data/trophies.json')).json();
+const guideDoc = await (await fetch('data/guides.json')).json();
+const allTrophies = trophyDoc.trophies;
+const guideBook = guideDoc.guides;
+const lookup = new Map(allTrophies.map((t) => [t.id, t]));
+const guideFor = (t) => guideBook[String(t.id)] || {
+  kind: 'misc', phase: 5, missable: false, missable_note: '', target: '',
+  effort: 'Medium', guide: t.guide, steps: [],
+  sources: ['Official trophy description — PlayStation (via Exophase trophy list)'],
+};
 
-let earned = new Set(JSON.parse(localStorage.getItem(EARNED_KEY) ?? '[]'));
-let notes = JSON.parse(localStorage.getItem(NOTES_KEY) ?? '{}');
-let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}');
-if (params.get('seed') && earned.size === 0) {
-  earned = new Set(SEED_IDS);
-  saveEarned();
+const state = {
+  earned: new Set(JSON.parse(localStorage.getItem(STORE.earned) ?? '[]')),
+  notes: JSON.parse(localStorage.getItem(STORE.notes) ?? '{}'),
+  settings: JSON.parse(localStorage.getItem(STORE.settings) ?? '{}'),
+  view: query.get('view') || 'checklist',
+  picked: Number(query.get('trophy') || 17),
+};
+
+const persist = {
+  earned() { localStorage.setItem(STORE.earned, JSON.stringify([...state.earned])); },
+  notes() { localStorage.setItem(STORE.notes, JSON.stringify(state.notes)); },
+  settings() { localStorage.setItem(STORE.settings, JSON.stringify(state.settings)); },
+};
+
+if (query.get('seed') && state.earned.size === 0) {
+  state.earned = new Set(SEED_IDS);
+  persist.earned();
 }
-if (params.get('theme') === 'dark') settings.theme = 'dark';
-if (params.get('theme') === 'light') settings.theme = 'light';
-if (params.get('spoilers') === 'hide') settings.spoilers = true;
-if (params.get('spoilers') === 'show') settings.spoilers = false;
-if (params.get('grade')) $('grade').value = params.get('grade');
+if (query.get('theme') === 'dark') state.settings.theme = 'dark';
+if (query.get('theme') === 'light') state.settings.theme = 'light';
+if (query.get('spoilers') === 'hide') state.settings.spoilers = true;
+if (query.get('spoilers') === 'show') state.settings.spoilers = false;
+if (query.get('grade')) el('grade').value = query.get('grade');
 
-function saveEarned() { localStorage.setItem(EARNED_KEY, JSON.stringify([...earned])); }
-function saveNotes() { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); }
-function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
-function isStory(t) { return guideOf(t).kind === 'story' || guideOf(t).kind === 'platinum'; }
-function hiddenBySpoiler(t) { return settings.spoilers && isStory(t) && !earned.has(t.id); }
-function displayName(t) { return hiddenBySpoiler(t) ? 'Hidden story trophy' : t.name; }
-function displayDesc(t) { return hiddenBySpoiler(t) ? 'Hidden until earned — turn spoilers off to reveal it.' : t.description; }
-
-const kinds = [...new Set(trophies.map((t) => guideOf(t).kind))].sort();
-for (const k of kinds) {
-  const o = document.createElement('option');
-  o.value = k; o.textContent = k[0].toUpperCase() + k.slice(1);
-  $('kind').append(o);
-}
-$('spoilers').checked = !!settings.spoilers;
-document.body.classList.toggle('dark', settings.theme === 'dark');
-$('theme').textContent = settings.theme === 'dark' ? 'Paper theme' : 'Night theme';
+const storyLike = (t) => guideFor(t).kind === 'story' || guideFor(t).kind === 'platinum';
+const spoilerHidden = (t) => state.settings.spoilers && storyLike(t) && !state.earned.has(t.id);
+const shownName = (t) => spoilerHidden(t) ? 'Hidden story trophy' : t.name;
+const shownDesc = (t) => spoilerHidden(t)
+  ? 'Hidden until earned — turn spoilers off to reveal it.'
+  : t.description;
 
 const PHASES = [
-  { n: 1, title: 'Phase 1 — Story first', text: 'Play Chapters 1–4 and the finale, plus the named story missions. Nothing here needs grinding. While the story pairs you with your partner, do the two partner trophies (Hot Together, Retail Therapy) — they are the only ones with a real miss window.' },
-  { n: 2, title: 'Phase 2 — Strangers & side missions', text: 'The five contact strands (Andy, Kenton, Billy, Randy, Tyrone), other strangers, Bret’s hunt, and the side one-offs: VCIA departure, armored truck, showroom smash, Ocean Beach cocktail.' },
-  { n: 3, title: 'Phase 3 — Activities & skills', text: 'Shooting Range golds, drone races, street races, fishing vs Cal, arcade, bowling, stunts, Combat Focus, the melee drive-by, and the second-try trophy. Short, repeatable, skill-based.' },
+  { n: 1, title: 'Phase 1 — Story first', text: 'Chapters 1–4 and the finale, plus the named story missions. No grinding lives here. While the story pairs you with your partner, grab the two partner trophies (Hot Together, Retail Therapy) — they carry the only real miss window.' },
+  { n: 2, title: 'Phase 2 — Strangers & side missions', text: 'The five contact strands (Andy, Kenton, Billy, Randy, Tyrone), the other strangers, Bret’s hunt, and the one-offs: the VCIA departure, the armored truck, the showroom smash, the Ocean Beach cocktail.' },
+  { n: 3, title: 'Phase 3 — Activities & skills', text: 'Shooting Range golds, drone races, street races, fishing against Cal, arcade, bowling, stunts, Combat Focus, the melee drive-by, and the second-try trophy. Short, repeatable, skill-based.' },
   { n: 4, title: 'Phase 4 — Collectibles & counts', text: 'The long sweeps: cards, WAiNK spots, meditation spots, 52 areas, 100 vehicles, bank vaults, gang operations, marked-bill laundering, shop spending, garages, Scooter Bros registrations, 50 challenges.' },
-  { n: 5, title: 'Phase 5 — Cleanup & platinum', text: 'Choices to 500, 100% completion, then the platinum. 100% needs almost everything else done, so it goes last by design.' },
+  { n: 5, title: 'Phase 5 — Cleanup & platinum', text: 'Choices to 500, 100% completion, then the platinum. 100% needs nearly everything else finished, so it sits last on purpose.' },
 ];
 
-let view = params.get('view') || 'checklist';
-let pickedId = Number(params.get('trophy') || 17);
+const EFFORT_ORDER = { Short: 0, Medium: 1, 'Long grind': 2 };
 
-function renderHeader() {
-  const total = trophies.length;
-  const pct = Math.round((earned.size / total) * 100);
-  $('progressText').textContent = `${earned.size} of ${total} earned · ${pct}%`;
-  $('progressBar').style.width = `${pct}%`;
-  document.title = earned.size === total
+function paintHeader() {
+  const total = allTrophies.length;
+  const pct = Math.round((state.earned.size / total) * 100);
+  el('progressText').textContent = `${state.earned.size} of ${total} earned · ${pct}%`;
+  el('progressBar').style.width = `${pct}%`;
+  document.title = state.earned.size === total
     ? 'Leonida Legend — Platinum earned!'
-    : `Leonida Legend — ${earned.size}/55 trophies (${pct}%)`;
-  const counts = ['platinum', 'gold', 'silver', 'bronze'].map((g) => {
-    const all = trophies.filter((t) => t.grade === g).length;
-    const got = trophies.filter((t) => t.grade === g && earned.has(t.id)).length;
+    : `Leonida Legend — ${state.earned.size}/55 trophies (${pct}%)`;
+  el('gradeCounts').textContent = ['platinum', 'gold', 'silver', 'bronze'].map((g) => {
+    const all = allTrophies.filter((t) => t.grade === g).length;
+    const got = allTrophies.filter((t) => t.grade === g && state.earned.has(t.id)).length;
     return `${g} ${got}/${all}`;
-  }).join(' · ');
-  $('gradeCounts').textContent = `${counts} · 55 total (1 platinum, 2 gold, 6 silver, 46 bronze) · 28 hidden on PSN`;
+  }).join(' · ') + ' · 55 total (1 platinum, 2 gold, 6 silver, 46 bronze) · 28 hidden on PSN';
 }
 
-function filtered() {
-  const q = $('search').value.trim().toLowerCase();
-  const g = $('grade').value, k = $('kind').value, s = $('status').value;
-  return trophies.filter((t) => {
-    if (g !== 'all' && t.grade !== g) return false;
-    if (k !== 'all' && guideOf(t).kind !== k) return false;
-    if (s === 'earned' && !earned.has(t.id)) return false;
-    if (s === 'remaining' && earned.has(t.id)) return false;
-    if ($('hideEarned').checked && earned.has(t.id)) return false;
-    if ($('missableOnly').checked && !guideOf(t).missable) return false;
-    if (q && !(t.name.toLowerCase().includes(q) || t.description.toLowerCase().includes(q) || guideOf(t).guide.toLowerCase().includes(q) || (guideOf(t).target || '').toLowerCase().includes(q))) return false;
-    return true;
+function visibleList() {
+  const q = el('search').value.trim().toLowerCase();
+  const grade = el('grade').value;
+  const kind = el('kind').value;
+  const status = el('status').value;
+  return allTrophies.filter((t) => {
+    const gd = guideFor(t);
+    if (grade !== 'all' && t.grade !== grade) return false;
+    if (kind !== 'all' && gd.kind !== kind) return false;
+    if (status === 'earned' && !state.earned.has(t.id)) return false;
+    if (status === 'remaining' && state.earned.has(t.id)) return false;
+    if (el('hideEarned').checked && state.earned.has(t.id)) return false;
+    if (el('missableOnly').checked && !gd.missable) return false;
+    if (!q) return true;
+    return t.name.toLowerCase().includes(q)
+      || t.description.toLowerCase().includes(q)
+      || gd.guide.toLowerCase().includes(q)
+      || (gd.target || '').toLowerCase().includes(q);
   });
 }
 
-function renderChecklist() {
-  const rows = $('rows');
+function paintList() {
+  const rows = el('rows');
   rows.replaceChildren();
-  const list = filtered();
+  const list = visibleList();
   for (const t of list) {
-    const gd = guideOf(t);
+    const gd = guideFor(t);
     const tr = document.createElement('tr');
-    if (earned.has(t.id)) tr.className = 'earned';
+    if (state.earned.has(t.id)) tr.className = 'earned';
     const box = document.createElement('input');
-    box.type = 'checkbox'; box.checked = earned.has(t.id);
+    box.type = 'checkbox';
+    box.checked = state.earned.has(t.id);
     box.setAttribute('aria-label', `Earned: ${t.name}`);
     box.addEventListener('change', () => {
-      if (box.checked) earned.add(t.id); else earned.delete(t.id);
-      saveEarned(); renderAll();
+      if (box.checked) state.earned.add(t.id); else state.earned.delete(t.id);
+      persist.earned();
+      paintAll();
     });
-    const c0 = document.createElement('td'); c0.append(box); tr.append(c0);
-    const c1 = document.createElement('td');
-    const nm = document.createElement('span'); nm.className = 'nm';
-    const link = document.createElement('a'); link.className = 'rowlink'; link.textContent = displayName(t);
-    link.addEventListener('click', () => { pickedId = t.id; showView('guide'); });
-    nm.append(link);
-    const ds = document.createElement('div'); ds.className = 'ds'; ds.textContent = displayDesc(t);
-    c1.append(nm, ds);
+    const tickCell = document.createElement('td');
+    tickCell.append(box);
+    tr.append(tickCell);
+    const nameCell = document.createElement('td');
+    const nameWrap = document.createElement('span');
+    nameWrap.className = 'nm';
+    const openLink = document.createElement('a');
+    openLink.className = 'rowlink';
+    openLink.textContent = shownName(t);
+    openLink.addEventListener('click', () => { state.picked = t.id; show('guide'); });
+    nameWrap.append(openLink);
+    const descLine = document.createElement('div');
+    descLine.className = 'ds';
+    descLine.textContent = shownDesc(t);
+    nameCell.append(nameWrap, descLine);
     if (gd.missable) {
-      const f = document.createElement('div'); f.className = 'flag'; f.textContent = '⚠ Missable — see guide';
-      c1.append(f);
+      const warn = document.createElement('div');
+      warn.className = 'flag';
+      warn.textContent = '⚠ Missable — see guide';
+      nameCell.append(warn);
     }
-    tr.append(c1);
-    const c2 = document.createElement('td');
-    const b = document.createElement('span'); b.className = `badge ${t.grade}`; b.textContent = t.grade;
-    c2.append(b); tr.append(c2);
-    const c3 = document.createElement('td');
-    const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = gd.kind;
-    c3.append(tag); tr.append(c3);
-    const c4 = document.createElement('td'); c4.textContent = gd.target || '—'; tr.append(c4);
-    const c5 = document.createElement('td'); c5.textContent = t.guide; tr.append(c5);
+    tr.append(nameCell);
+    const gradeCell = document.createElement('td');
+    const badge = document.createElement('span');
+    badge.className = `badge ${t.grade}`;
+    badge.textContent = t.grade;
+    gradeCell.append(badge);
+    tr.append(gradeCell);
+    const kindCell = document.createElement('td');
+    const kindTag = document.createElement('span');
+    kindTag.className = 'tag';
+    kindTag.textContent = gd.kind;
+    kindCell.append(kindTag);
+    tr.append(kindCell);
+    const targetCell = document.createElement('td');
+    targetCell.textContent = gd.target || '—';
+    tr.append(targetCell);
+    const shortCell = document.createElement('td');
+    shortCell.textContent = t.guide;
+    tr.append(shortCell);
     rows.append(tr);
   }
-  $('listMeta').textContent = `Showing ${list.length} of 55 trophies · ${earned.size} earned · click a trophy name to open its full guide.`;
+  el('listMeta').textContent = `Showing ${list.length} of 55 trophies · ${state.earned.size} earned · click a trophy name to open its full guide.`;
 }
 
-function renderDetail() {
-  const pick = $('trophyPick');
+function paintGuide() {
+  const pick = el('trophyPick');
   pick.replaceChildren();
-  for (const t of trophies) {
-    const o = document.createElement('option');
-    o.value = t.id; o.textContent = `${t.id}. ${displayName(t)} (${t.grade})`;
-    pick.append(o);
+  for (const t of allTrophies) {
+    const option = document.createElement('option');
+    option.value = t.id;
+    option.textContent = `${t.id}. ${shownName(t)} (${t.grade})`;
+    pick.append(option);
   }
-  pick.value = String(pickedId);
-  const t = byId.get(pickedId) || trophies[0];
-  const gd = guideOf(t);
-  const d = $('detail');
-  d.replaceChildren();
-  const h = document.createElement('h2'); h.textContent = displayName(t); d.append(h);
-  const meta = document.createElement('p'); meta.className = 'meta';
-  meta.textContent = `#${t.id} · ${t.grade} · ${gd.kind} · Roadmap phase ${gd.phase} · Effort: ${gd.effort}${gd.target ? ` · PSN target: ${gd.target}` : ''}${earned.has(t.id) ? ' · ✓ Earned' : ' · Not earned yet'}`;
-  d.append(meta);
-  const off = document.createElement('p'); off.className = 'official';
-  off.textContent = `Official description: “${displayDesc(t)}”`;
-  d.append(off);
+  pick.value = String(state.picked);
+  const t = lookup.get(state.picked) || allTrophies[0];
+  const gd = guideFor(t);
+  const panel = el('detail');
+  panel.replaceChildren();
+  const heading = document.createElement('h2');
+  heading.textContent = shownName(t);
+  panel.append(heading);
+  const meta = document.createElement('p');
+  meta.className = 'meta';
+  meta.textContent = `#${t.id} · ${t.grade} · ${gd.kind} · Roadmap phase ${gd.phase} · Effort: ${gd.effort}`
+    + (gd.target ? ` · PSN target: ${gd.target}` : '')
+    + (state.earned.has(t.id) ? ' · ✓ Earned' : ' · Not earned yet');
+  panel.append(meta);
+  const official = document.createElement('p');
+  official.className = 'official';
+  official.textContent = `Official description: “${shownDesc(t)}”`;
+  panel.append(official);
   if (gd.missable) {
-    const warn = document.createElement('p'); warn.className = 'flag';
+    const warn = document.createElement('p');
+    warn.className = 'flag';
     warn.textContent = `⚠ Missable: ${gd.missable_note}`;
-    d.append(warn);
+    panel.append(warn);
   }
-  const h3 = document.createElement('h3'); h3.textContent = 'Guide'; d.append(h3);
-  const p = document.createElement('p'); p.textContent = gd.guide; d.append(p);
+  const guideHeading = document.createElement('h3');
+  guideHeading.textContent = 'Guide';
+  panel.append(guideHeading);
+  const guideText = document.createElement('p');
+  guideText.textContent = gd.guide;
+  panel.append(guideText);
   if (gd.steps.length) {
-    const h4 = document.createElement('h3'); h4.textContent = 'Steps'; d.append(h4);
-    const ol = document.createElement('ol');
-    for (const s of gd.steps) { const li = document.createElement('li'); li.textContent = s; ol.append(li); }
-    d.append(ol);
+    const stepsHeading = document.createElement('h3');
+    stepsHeading.textContent = 'Steps';
+    panel.append(stepsHeading);
+    const list = document.createElement('ol');
+    for (const s of gd.steps) {
+      const item = document.createElement('li');
+      item.textContent = s;
+      list.append(item);
+    }
+    panel.append(list);
   }
-  const src = document.createElement('p'); src.className = 'src';
-  src.textContent = `Sources: ${gd.sources.join(' · ')}. The guide above is our own words, written for this entry; the official name and description are quoted as published. GTA VI launched 19 Nov 2026 — this plan follows the official description and is not yet play-verified.`;
-  d.append(src);
-  const h5 = document.createElement('h3'); h5.textContent = 'Your notes'; d.append(h5);
-  const ta = document.createElement('textarea');
-  ta.value = notes[String(t.id)] || '';
-  ta.placeholder = 'e.g. locations found, counts so far, which gangs are done…';
-  ta.addEventListener('input', () => { notes[String(t.id)] = ta.value; saveNotes(); });
-  d.append(ta);
-  const acts = document.createElement('div'); acts.className = 'actions';
-  const btn = document.createElement('button'); btn.type = 'button';
-  btn.textContent = earned.has(t.id) ? 'Mark as not earned' : 'Mark as earned';
-  btn.addEventListener('click', () => {
-    if (earned.has(t.id)) earned.delete(t.id); else earned.add(t.id);
-    saveEarned(); renderAll();
+  const sourceLine = document.createElement('p');
+  sourceLine.className = 'src';
+  sourceLine.textContent = `Sources: ${gd.sources.join(' · ')}. The guide above is our own words, written for this entry; the official name and description are quoted as published. GTA VI launched 19 Nov 2026 — this plan follows the official description and is not yet play-verified.`;
+  panel.append(sourceLine);
+  const notesHeading = document.createElement('h3');
+  notesHeading.textContent = 'Your notes';
+  panel.append(notesHeading);
+  const area = document.createElement('textarea');
+  area.value = state.notes[String(t.id)] || '';
+  area.placeholder = 'e.g. locations found, counts so far, which gangs are done…';
+  area.addEventListener('input', () => { state.notes[String(t.id)] = area.value; persist.notes(); });
+  panel.append(area);
+  const actions = document.createElement('div');
+  actions.className = 'actions';
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.textContent = state.earned.has(t.id) ? 'Mark as not earned' : 'Mark as earned';
+  toggle.addEventListener('click', () => {
+    if (state.earned.has(t.id)) state.earned.delete(t.id); else state.earned.add(t.id);
+    persist.earned();
+    paintAll();
   });
-  acts.append(btn); d.append(acts);
+  actions.append(toggle);
+  panel.append(actions);
 }
 
-function renderRoadmap() {
-  const wrap = $('roadmap');
+function paintRoadmap() {
+  const wrap = el('roadmap');
   wrap.replaceChildren();
   for (const ph of PHASES) {
-    const card = document.createElement('div'); card.className = 'phase';
-    const h = document.createElement('h3'); h.textContent = ph.title; card.append(h);
-    const p = document.createElement('p'); p.textContent = ph.text; card.append(p);
-    const chips = document.createElement('div'); chips.className = 'chips';
-    for (const t of trophies.filter((x) => guideOf(x).phase === ph.n)) {
-      const c = document.createElement('span');
-      c.className = 'chip' + (earned.has(t.id) ? ' done' : '');
-      c.textContent = `${earned.has(t.id) ? '✓ ' : ''}${displayName(t)} (${t.grade})`;
-      chips.append(c);
+    const card = document.createElement('div');
+    card.className = 'phase';
+    const heading = document.createElement('h3');
+    heading.textContent = ph.title;
+    card.append(heading);
+    const blurb = document.createElement('p');
+    blurb.textContent = ph.text;
+    card.append(blurb);
+    const chips = document.createElement('div');
+    chips.className = 'chips';
+    for (const t of allTrophies.filter((x) => guideFor(x).phase === ph.n)) {
+      const chip = document.createElement('span');
+      chip.className = 'chip' + (state.earned.has(t.id) ? ' done' : '');
+      chip.textContent = `${state.earned.has(t.id) ? '✓ ' : ''}${shownName(t)} (${t.grade})`;
+      chips.append(chip);
     }
     card.append(chips);
-    const done = trophies.filter((x) => guideOf(x).phase === ph.n && earned.has(x.id)).length;
-    const total = trophies.filter((x) => guideOf(x).phase === ph.n).length;
-    const m = document.createElement('p'); m.className = 'muted'; m.textContent = `${done} of ${total} earned in this phase.`;
-    card.append(m);
+    const done = allTrophies.filter((x) => guideFor(x).phase === ph.n && state.earned.has(x.id)).length;
+    const total = allTrophies.filter((x) => guideFor(x).phase === ph.n).length;
+    const count = document.createElement('p');
+    count.className = 'muted';
+    count.textContent = `${done} of ${total} earned in this phase.`;
+    card.append(count);
     wrap.append(card);
   }
 }
 
-function renderMissables() {
-  const wrap = $('missables');
+function paintMissables() {
+  const wrap = el('missables');
   wrap.replaceChildren();
-  const list = trophies.filter((t) => guideOf(t).missable);
-  for (const t of list) {
-    const gd = guideOf(t);
-    const card = document.createElement('div'); card.className = 'misscard';
-    const h = document.createElement('h3'); h.textContent = `${displayName(t)} — ${t.grade}`; card.append(h);
-    const p = document.createElement('p'); p.textContent = gd.missable_note; card.append(p);
-    const s = document.createElement('p'); s.className = 'src';
-    s.textContent = `Official description: “${t.description}” · Source: ${gd.sources.join(' · ')}`;
-    card.append(s);
+  for (const t of allTrophies.filter((x) => guideFor(x).missable)) {
+    const gd = guideFor(t);
+    const card = document.createElement('div');
+    card.className = 'misscard';
+    const heading = document.createElement('h3');
+    heading.textContent = `${shownName(t)} — ${t.grade}`;
+    card.append(heading);
+    const note = document.createElement('p');
+    note.textContent = gd.missable_note;
+    card.append(note);
+    const src = document.createElement('p');
+    src.className = 'src';
+    src.textContent = `Official description: “${t.description}” · Source: ${gd.sources.join(' · ')}`;
+    card.append(src);
     wrap.append(card);
   }
-  const note = document.createElement('p');
-  note.className = 'muted';
-  note.textContent = 'Story-locked (not missable, but only available in the story): the chapter trophies, the named-mission trophies, the final mission, and the partnership moment (Personal Best). Play the story and they come.';
-  wrap.append(note);
+  const footnote = document.createElement('p');
+  footnote.className = 'muted';
+  footnote.textContent = 'Story-locked (not missable, but only available in the story): the chapter trophies, the named-mission trophies, the final mission, and the partnership moment (Personal Best). Play the story and they come.';
+  wrap.append(footnote);
 }
 
-function renderPlanner() {
-  const effortRank = { Short: 0, Medium: 1, 'Long grind': 2 };
-  const remaining = trophies.filter((t) => !earned.has(t.id));
+function paintPlanner() {
+  const remaining = allTrophies.filter((t) => !state.earned.has(t.id));
   remaining.sort((a, b) => {
-    const pa = guideOf(a).phase, pb = guideOf(b).phase;
+    const pa = guideFor(a).phase, pb = guideFor(b).phase;
     if (pa !== pb) return pa - pb;
-    return (effortRank[guideOf(a).effort] ?? 1) - (effortRank[guideOf(b).effort] ?? 1);
+    return (EFFORT_ORDER[guideFor(a).effort] ?? 1) - (EFFORT_ORDER[guideFor(b).effort] ?? 1);
   });
-  const list = $('planner');
+  const list = el('planner');
   list.replaceChildren();
   for (const t of remaining.slice(0, 5)) {
-    const gd = guideOf(t);
-    const li = document.createElement('li');
-    const b = document.createElement('strong'); b.textContent = displayName(t);
-    li.append(b, ` — ${t.grade}, ${gd.kind}, phase ${gd.phase}, ${gd.effort}. `);
-    const why = document.createElement('span'); why.className = 'why';
+    const gd = guideFor(t);
+    const item = document.createElement('li');
+    const bold = document.createElement('strong');
+    bold.textContent = shownName(t);
+    item.append(bold, ` — ${t.grade}, ${gd.kind}, phase ${gd.phase}, ${gd.effort}. `);
+    const why = document.createElement('span');
+    why.className = 'why';
     why.textContent = gd.guide.split('.')[0] + '.';
-    li.append(why);
-    list.append(li);
+    item.append(why);
+    list.append(item);
   }
   if (!remaining.length) {
-    const li = document.createElement('li'); li.textContent = 'Everything is earned — the platinum should have popped. Leonida Legend!';
-    list.append(li);
+    const item = document.createElement('li');
+    item.textContent = 'Everything is earned — the platinum should have popped. Leonida Legend!';
+    list.append(item);
   }
 }
 
-function showView(v) {
-  view = v;
-  for (const sec of document.querySelectorAll('.view')) sec.hidden = sec.id !== `view-${v}`;
+function show(v) {
+  state.view = v;
+  for (const section of document.querySelectorAll('.view')) section.hidden = section.id !== `view-${v}`;
   for (const b of document.querySelectorAll('.tabs button')) b.classList.toggle('active', b.dataset.view === v);
-  if (v === 'checklist') renderChecklist();
-  if (v === 'guide') renderDetail();
-  if (v === 'roadmap') renderRoadmap();
-  if (v === 'missables') renderMissables();
-  if (v === 'planner') renderPlanner();
+  if (v === 'checklist') paintList();
+  if (v === 'guide') paintGuide();
+  if (v === 'roadmap') paintRoadmap();
+  if (v === 'missables') paintMissables();
+  if (v === 'planner') paintPlanner();
 }
 
-function renderAll() {
-  renderHeader();
-  showView(view);
+function paintAll() {
+  paintHeader();
+  show(state.view);
 }
+
+for (const k of [...new Set(allTrophies.map((t) => guideFor(t).kind))].sort()) {
+  const option = document.createElement('option');
+  option.value = k;
+  option.textContent = k[0].toUpperCase() + k.slice(1);
+  el('kind').append(option);
+}
+el('spoilers').checked = !!state.settings.spoilers;
+document.body.classList.toggle('dark', state.settings.theme === 'dark');
+el('theme').textContent = state.settings.theme === 'dark' ? 'Paper theme' : 'Night theme';
 
 for (const b of document.querySelectorAll('.tabs button')) {
-  b.addEventListener('click', () => showView(b.dataset.view));
+  b.addEventListener('click', () => show(b.dataset.view));
 }
-$('search').addEventListener('input', renderChecklist);
-$('grade').addEventListener('change', renderChecklist);
-$('kind').addEventListener('change', renderChecklist);
-$('status').addEventListener('change', renderChecklist);
-$('hideEarned').addEventListener('change', renderChecklist);
-$('missableOnly').addEventListener('change', renderChecklist);
-$('spoilers').addEventListener('change', (e) => { settings.spoilers = e.target.checked; saveSettings(); renderAll(); });
-$('theme').addEventListener('click', () => {
-  settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
-  saveSettings();
-  document.body.classList.toggle('dark', settings.theme === 'dark');
-  $('theme').textContent = settings.theme === 'dark' ? 'Paper theme' : 'Night theme';
+el('search').addEventListener('input', paintList);
+el('grade').addEventListener('change', paintList);
+el('kind').addEventListener('change', paintList);
+el('status').addEventListener('change', paintList);
+el('hideEarned').addEventListener('change', paintList);
+el('missableOnly').addEventListener('change', paintList);
+el('spoilers').addEventListener('change', (e) => { state.settings.spoilers = e.target.checked; persist.settings(); paintAll(); });
+el('theme').addEventListener('click', () => {
+  state.settings.theme = state.settings.theme === 'dark' ? 'light' : 'dark';
+  persist.settings();
+  document.body.classList.toggle('dark', state.settings.theme === 'dark');
+  el('theme').textContent = state.settings.theme === 'dark' ? 'Paper theme' : 'Night theme';
 });
-$('trophyPick').addEventListener('change', (e) => { pickedId = Number(e.target.value); renderDetail(); });
+el('trophyPick').addEventListener('change', (e) => { state.picked = Number(e.target.value); paintGuide(); });
 document.addEventListener('keydown', (e) => {
-  if (e.key === '/' && document.activeElement !== $('search') && document.activeElement.tagName !== 'TEXTAREA') {
+  if (e.key === '/' && document.activeElement !== el('search') && document.activeElement.tagName !== 'TEXTAREA') {
     e.preventDefault();
-    $('search').focus();
+    el('search').focus();
   }
 });
-$('export').addEventListener('click', () => {
-  const data = { game: 'Grand Theft Auto VI', earned: [...earned], notes, exportedAt: new Date().toISOString() };
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
-  a.download = 'gta6-trophy-progress.json';
-  a.click();
+el('export').addEventListener('click', () => {
+  const data = { game: 'Grand Theft Auto VI', earned: [...state.earned], notes: state.notes, exportedAt: new Date().toISOString() };
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+  link.download = 'gta6-trophy-progress.json';
+  link.click();
 });
-$('import').addEventListener('change', async (e) => {
+el('import').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
   try {
     const data = JSON.parse(await file.text());
     const ids = Array.isArray(data) ? data : data.earned;
-    earned = new Set((ids || []).filter((id) => byId.has(Number(id))).map(Number));
-    if (data.notes) notes = data.notes;
-    saveEarned(); saveNotes(); renderAll();
+    state.earned = new Set((ids || []).filter((id) => lookup.has(Number(id))).map(Number));
+    if (data.notes) state.notes = data.notes;
+    persist.earned();
+    persist.notes();
+    paintAll();
   } catch { alert('That file is not valid progress JSON.'); }
 });
-$('reset').addEventListener('click', () => {
+el('reset').addEventListener('click', () => {
   if (!confirm('Clear all earned ticks and notes?')) return;
-  earned = new Set(); notes = {};
-  saveEarned(); saveNotes(); renderAll();
+  state.earned = new Set();
+  state.notes = {};
+  persist.earned();
+  persist.notes();
+  paintAll();
 });
 
-renderAll();
+paintAll();
 window.__shotReady = true;
