@@ -3,6 +3,7 @@ body.dark { color-scheme: dark; --bg: #171512; --surface: #221f1a; --ink: #f0e9d
 * { box-sizing: border-box; }
 body { font-family: Georgia, 'Times New Roman', serif; margin: 0; background: var(--bg); color: var(--ink); }
 body, button, input, select, textarea { font-size: 15px; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .top { display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; padding: 20px 28px 8px; }
 .top h1 { margin: 0; font-size: 34px; letter-spacing: .5px; color: var(--accent); }
 .sub { margin: 4px 0 0; color: var(--muted); }
@@ -12,6 +13,8 @@ body, button, input, select, textarea { font-size: 15px; }
 .bar > div { height: 100%; width: 0; background: var(--bar); }
 .muted { color: var(--muted); font-size: 13px; }
 .notice { margin: 8px 28px; padding: 10px 14px; background: var(--badge); border-left: 4px solid var(--accent); font-size: 14px; line-height: 1.45; }
+.hint { margin: 0 28px 4px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.hint kbd { font-family: inherit; font-size: 12px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--surface); }
 .tabs { display: flex; gap: 8px; padding: 8px 28px; }
 .tabs button { padding: 8px 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 20px; cursor: pointer; font-weight: bold; }
 .tabs button.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }

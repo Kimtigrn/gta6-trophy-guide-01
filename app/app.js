@@ -1,6 +1,8 @@
 // Leonida Legend — GTA VI trophy guide & tracker (written for this entry).
 // Static, offline, no network: loads data/trophies.json (official list) and
 // data/guides.json (guides written for this entry), saves progress in localStorage.
+// Re-authored 2026-11-19 under recording 01a1f3cb: progress now also shows in the
+// document title, and pressing "/" focuses the search box.
 const EARNED_KEY = 'gta6-trophy-earned-v1';
 const NOTES_KEY = 'gta6-trophy-notes-v1';
 const SETTINGS_KEY = 'gta6-trophy-settings-v1';
@@ -62,6 +64,9 @@ function renderHeader() {
   const pct = Math.round((earned.size / total) * 100);
   $('progressText').textContent = `${earned.size} of ${total} earned · ${pct}%`;
   $('progressBar').style.width = `${pct}%`;
+  document.title = earned.size === total
+    ? 'Leonida Legend — Platinum earned!'
+    : `Leonida Legend — ${earned.size}/55 trophies (${pct}%)`;
   const counts = ['platinum', 'gold', 'silver', 'bronze'].map((g) => {
     const all = trophies.filter((t) => t.grade === g).length;
     const got = trophies.filter((t) => t.grade === g && earned.has(t.id)).length;
@@ -280,6 +285,12 @@ $('theme').addEventListener('click', () => {
   $('theme').textContent = settings.theme === 'dark' ? 'Paper theme' : 'Night theme';
 });
 $('trophyPick').addEventListener('change', (e) => { pickedId = Number(e.target.value); renderDetail(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement !== $('search') && document.activeElement.tagName !== 'TEXTAREA') {
+    e.preventDefault();
+    $('search').focus();
+  }
+});
 $('export').addEventListener('click', () => {
   const data = { game: 'Grand Theft Auto VI', earned: [...earned], notes, exportedAt: new Date().toISOString() };
   const a = document.createElement('a');

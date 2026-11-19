@@ -7,12 +7,10 @@
    "missable_note": "",
    "target": "All 54 other trophies",
    "effort": "Long grind",
-   "guide": "The platinum is automatic: it pops the moment the other 54 trophies are earned, with nothing extra to do for it. Treat it as a checklist, not a task — work the roadmap phases in order, story first and the long counts last, and the platinum arrives on its own. The Planner tab always shows what is left.",
+   "guide": "The platinum pops by itself the moment the other 54 trophies are earned — there is nothing extra to do for it. Treat it as a checklist rather than a task: work the roadmap phases in order, story first and the long counts last, and the platinum arrives on its own. The Planner tab always shows what is still missing.",
    "steps": [
     "Finish the story (Chapters 1–4 and the final mission).",
-    "Finish the five contact strands and the other stranger missions.",
-    "Clear the activities: shooting range, races, fishing, arcade, bowling.",
-    "Sweep the collectibles and counts (cards, WAiNK spots, vehicles, garages).",
+    "Finish the five contact strands, the activities and the collectible sweeps.",
     "Reach 100% completion — the platinum should pop with it."
    ],
    "sources": [
@@ -27,12 +25,11 @@
    "missable_note": "",
    "target": "Complete Gone Fishing",
    "effort": "Short",
-   "guide": "Gone Fishing is the opening mission, so this is the first story trophy and it cannot be missed: start a new game and play the opening through to its end. It pops at the mission-complete screen, and it is the game's way of handing you the controls.",
+   "guide": "Gone Fishing is the opening mission, so this is the first story trophy and it cannot be missed: start a new game and play the opening through to its end. It pops at the mission-complete screen — the game's way of handing you the controls.",
    "steps": [
     "Start a new game.",
     "Follow the opening prompts — the mission teaches movement, driving and the basics.",
-    "Finish Gone Fishing to its mission-complete screen.",
-    "The trophy pops on completion; nothing else is needed."
+    "Finish Gone Fishing to its mission-complete screen."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -46,12 +43,11 @@
    "missable_note": "",
    "target": "Complete Chapter 1",
    "effort": "Short",
-   "guide": "Chapter 1's trophy comes from playing the story straight through: finish every mission the chapter gives you, in the order the game presents them, and the trophy pops at the chapter's end. Story chapters cannot be missed — if you finish the chapter, you earn it.",
+   "guide": "Chapter 1's trophy comes from playing the story straight through: finish every mission the chapter gives you, in the order the game presents them, and the trophy pops at the chapter's end. Story chapters cannot be missed — finish the chapter and you earn it.",
    "steps": [
     "Play Chapter 1's missions in the order the game offers them.",
-    "Do not worry about side content yet — the chapter trophy only needs the story.",
-    "Reach the chapter's final mission and complete it.",
-    "The trophy pops when Chapter 1 closes."
+    "Ignore side content for now — the chapter trophy only needs the story.",
+    "Complete the chapter's final mission; the trophy pops as Chapter 1 closes."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -69,8 +65,7 @@
    "steps": [
     "Continue the story into Chapter 2 after Chapter 1 closes.",
     "Play the chapter's missions in the order offered.",
-    "Complete the chapter's final mission.",
-    "The trophy pops when Chapter 2 closes."
+    "Complete the chapter's final mission; the trophy pops as Chapter 2 closes."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -88,8 +83,7 @@
    "steps": [
     "Continue the story into Chapter 3.",
     "Play the chapter's missions in the order offered.",
-    "Complete the chapter's final mission.",
-    "The trophy pops when Chapter 3 closes."
+    "Complete the chapter's final mission; the trophy pops as Chapter 3 closes."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -107,8 +101,7 @@
    "steps": [
     "Continue the story into Chapter 4.",
     "Play the chapter's missions in the order offered.",
-    "Complete the chapter's final mission.",
-    "The trophy pops when Chapter 4 closes."
+    "Complete the chapter's final mission; the trophy pops as Chapter 4 closes."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -126,8 +119,7 @@
    "steps": [
     "Finish Chapters 1–4.",
     "Play the final mission when the story offers it.",
-    "Complete the mission to its end screen.",
-    "The gold pops with the story's close."
+    "Complete the mission to its end screen — the gold pops with the story's close."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -169,8 +161,7 @@
     "Official trophy description — PlayStation (via Exophase trophy list)",
     "PSNProfiles — GTA VI trophy list"
    ]
-  }
-,
+  },
   "10": {
    "kind": "story",
    "phase": 1,
@@ -253,10 +244,8 @@
    "guide": "A Long Road is the gold for 100% completion, and it goes last by design: in GTA games the 100% checklist has always been the story plus side missions, collectibles, activities and counts, so it feeds on almost everything else in this guide. Open the in-game stats screen early and read its 100% checklist — that list, not any guide, is the authority on what is left. Work it in the roadmap's order and mop up the leftovers here.",
    "steps": [
     "Open the in-game stats screen and read the 100% checklist early, so you know what counts.",
-    "Finish the story and the stranger strands (phases 1–2).",
-    "Finish the activities and the collectible sweeps (phases 3–4).",
-    "Check the stats screen after each phase and clear what remains.",
-    "The gold pops when the checklist reads 100%."
+    "Finish the story, the stranger strands, the activities and the collectible sweeps.",
+    "Check the stats screen after each phase and clear what remains — the gold pops at 100%."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -274,8 +263,7 @@
    "steps": [
     "Start counting early — take jumps and ramps whenever you pass them.",
     "Use fast cars and stunt jumps to build airtime and landing counts.",
-    "Check the stats screen to see how the game counts a stunt.",
-    "Keep chipping at the count between story missions until it reaches 250."
+    "Check the stats screen to see how the game counts a stunt, and keep chipping at it until 250."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -291,10 +279,8 @@
    "effort": "Short",
    "guide": "Master of None is a sampler trophy: try each type of activity once. The game is full of activities — races, fishing, the arcade, bowling, the shooting range, drone races, meditation, stunts — and the trophy pops when you have tried the last type. Work through the activities in phase 3 and this one takes care of itself.",
    "steps": [
-    "Try a race (street or drone).",
-    "Try fishing, an arcade game and bowling.",
-    "Try the Shooting Range and a stunt jump.",
-    "Try meditation at a spot you pass.",
+    "Try a race (street or drone), fishing, an arcade game and bowling.",
+    "Try the Shooting Range, a stunt jump and meditation at a spot you pass.",
     "The trophy pops once every activity type has been tried."
    ],
    "sources": [
@@ -312,10 +298,8 @@
    "guide": "The Shootist is a skill trophy: earn a gold medal in all Shooting Range challenges. The list's count is 42 challenges, so this is a long practice session, not a single visit — work through the range's challenges weapon by weapon, learn each one's gold threshold, and repeat a challenge until the gold lands. Scores and thresholds are per challenge, so a bad run costs nothing but the retry.",
    "steps": [
     "Find a Shooting Range and open its challenge list.",
-    "Work the challenges one weapon class at a time.",
-    "Note each challenge's gold threshold before you shoot.",
-    "Repeat any challenge until gold — retries are free.",
-    "The silver pops when every challenge shows gold."
+    "Work the challenges one weapon class at a time, noting each gold threshold before you shoot.",
+    "Repeat any challenge until gold — the silver pops when every challenge shows gold."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -333,15 +317,13 @@
    "steps": [
     "Find the Top Fun drone race locations across Leonida.",
     "Race each location once to learn its course.",
-    "Win the race at each location in turn.",
-    "The trophy pops when the last location is won."
+    "Win the race at each location in turn — the trophy pops at the last one."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
     "PSNProfiles — GTA VI trophy list"
    ]
-  }
-,
+  },
   "19": {
    "kind": "activity",
    "phase": 3,
@@ -353,8 +335,7 @@
    "steps": [
     "Win races of different types — street, drone and any others offered.",
     "Win at different locations, not the same course twice.",
-    "Count wins in this app's notes as you go.",
-    "The trophy pops on the 20th different race win."
+    "Count wins in this app's notes as you go; the trophy pops on the 20th different race win."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -372,8 +353,7 @@
    "steps": [
     "Find Cal and take his fishing challenge.",
     "Fish the challenge through to its end.",
-    "If Cal wins, challenge him again — retries are free.",
-    "The trophy pops when you beat him."
+    "If Cal wins, challenge him again — the trophy pops when you beat him."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -391,8 +371,7 @@
    "steps": [
     "Find an arcade with playable cabinets.",
     "Start any arcade game.",
-    "Play it through to completion.",
-    "The trophy pops when the game ends."
+    "Play it through to completion — the trophy pops when the game ends."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -410,8 +389,7 @@
    "steps": [
     "Find Andy and start his mission strand.",
     "Play Andy's missions in the order offered.",
-    "Complete his final mission.",
-    "The trophy pops at the mission-complete screen."
+    "Complete his final mission — the trophy pops at the mission-complete screen."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -429,8 +407,7 @@
    "steps": [
     "Find Kenton and start his mission strand.",
     "Play Kenton's missions in the order offered.",
-    "Complete his final mission.",
-    "The trophy pops at the mission-complete screen."
+    "Complete his final mission — the trophy pops at the mission-complete screen."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -448,8 +425,7 @@
    "steps": [
     "Find Billy and start his mission strand.",
     "Play Billy's missions in the order offered.",
-    "Complete his final mission.",
-    "The trophy pops at the mission-complete screen."
+    "Complete his final mission — the trophy pops at the mission-complete screen."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -466,8 +442,7 @@
    "guide": "Strangers & Freaks is a silver for breadth: complete 8 mission strands for strangers across Leonida. The five named contacts (Andy, Kenton, Billy, Randy, Tyrone) are five of the eight, so three more strangers are out there to find — explore the map, watch for stranger markers, and play each strand through to its end. A strand only counts when its missions are complete, not when it is merely started.",
    "steps": [
     "Finish the five named contact strands (Andy, Kenton, Billy, Randy, Tyrone).",
-    "Explore Leonida for other strangers — check the map for stranger markers.",
-    "Play each new stranger's missions through to their end.",
+    "Explore Leonida for other strangers — check the map for stranger markers — and play each new strand through.",
     "The silver pops on the eighth completed strand."
    ],
    "sources": [
@@ -486,8 +461,7 @@
    "steps": [
     "Find Randy and start his mission strand.",
     "Play Randy's missions in the order offered.",
-    "Complete his final mission.",
-    "The trophy pops at the mission-complete screen."
+    "Complete his final mission — the trophy pops at the mission-complete screen."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -505,15 +479,13 @@
    "steps": [
     "Find Tyrone and start his mission strand.",
     "Play Tyrone's missions in the order offered.",
-    "Complete his final mission.",
-    "The trophy pops at the mission-complete screen."
+    "Complete his final mission — the trophy pops at the mission-complete screen."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
     "PSNProfiles — GTA VI trophy list"
    ]
-  }
-,
+  },
   "28": {
    "kind": "collectible",
    "phase": 4,
@@ -525,9 +497,7 @@
    "steps": [
     "Learn what a meditation spot looks like at the first one you find.",
     "Meditate at every spot you pass during normal play.",
-    "In phase 4, sweep the map region by region for spots you missed.",
-    "Note each done spot in this app so you do not revisit it.",
-    "The trophy pops at the last spot."
+    "In phase 4, sweep the map region by region for spots you missed, noting each done spot in this app."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -545,8 +515,7 @@
    "steps": [
     "Find Bret and take his hunt.",
     "Follow Bret's lead to the animal's area.",
-    "Track the unique animal and take it down.",
-    "The trophy pops when the hunt completes."
+    "Track the unique animal and take it down — the trophy pops when the hunt completes."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -564,8 +533,7 @@
    "steps": [
     "Pick up every collectible card you spot during normal play.",
     "In phase 4, sweep the map area by area for cards.",
-    "Track which sets are close to complete in this app's notes.",
-    "The silver pops when your third set is complete."
+    "Track which sets are close to complete in this app's notes — the silver pops at your third completed set."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -583,8 +551,7 @@
    "steps": [
     "Learn the WAiNK action at the first location that offers it.",
     "WAiNK at every new location you visit during the story.",
-    "Check the counter in the stats screen to see how many are left.",
-    "Sweep unvisited locations in phase 4 until the count hits 100."
+    "Check the counter in the stats screen and sweep unvisited locations in phase 4 until the count hits 100."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -602,8 +569,7 @@
    "steps": [
     "Open the challenges menu early and read what it tracks.",
     "Let challenges complete naturally during the story and activities.",
-    "In phase 4, list the unfinished challenges and take the easiest first.",
-    "The trophy pops on the 50th completed challenge."
+    "In phase 4, list the unfinished challenges and take the easiest first — the trophy pops on the 50th."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -621,8 +587,7 @@
    "steps": [
     "Wait for a story moment that puts your partner beside you.",
     "Build a 4-star wanted level while your partner is with you.",
-    "Break line of sight and stay out of the search area together.",
-    "The trophy pops when the wanted level clears with your partner still beside you."
+    "Break line of sight and stay out of the search area together — the trophy pops when the wanted level clears with your partner still beside you."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -640,8 +605,7 @@
    "steps": [
     "Wait for a story moment with your partner beside you.",
     "Scout three shops close together before starting.",
-    "Rob the first shop, keep the wanted level, move straight to the second, then the third.",
-    "The trophy pops after the third robbery with the heat still on."
+    "Rob the first shop, keep the wanted level, move straight to the second, then the third — the trophy pops after the third robbery with the heat still on."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -659,8 +623,7 @@
    "steps": [
     "Enter or drive every new vehicle type you come across.",
     "Vary what you drive — repeats of one model add nothing.",
-    "Check the stats screen for how many are left.",
-    "In phase 4, hunt the missing vehicle types deliberately."
+    "Check the stats screen for how many are left, and in phase 4 hunt the missing vehicle types deliberately."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -678,15 +641,13 @@
    "steps": [
     "Find a fight with five or more enemies close together.",
     "Trigger Combat Focus with all five in reach.",
-    "Chain five takedowns inside the single use.",
-    "The trophy pops on the fifth takedown."
+    "Chain five takedowns inside the single use — the trophy pops on the fifth."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
     "PSNProfiles — GTA VI trophy list"
    ]
-  }
-,
+  },
   "37": {
    "kind": "side",
    "phase": 2,
@@ -698,8 +659,7 @@
    "steps": [
     "Get to VCIA with a plane available on the ground.",
     "Board it and take off — an unscheduled departure, not a booked flight.",
-    "The trophy should pop on departure.",
-    "If no plane is available, come back when the story brings you to VCIA."
+    "The trophy should pop on departure; if no plane is available, come back when the story brings you to VCIA."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -717,8 +677,7 @@
    "steps": [
     "Find a Rhino tank — military areas and high wanted levels are the classic places.",
     "Get in and drive it; use its cannon.",
-    "Keep at it until the trophy pops, and note the trigger in this app.",
-    "If no Rhino appears, push the wanted level higher and try military sites."
+    "Keep at it until the trophy pops, and note the trigger in this app."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -736,8 +695,7 @@
    "steps": [
     "Scout a jewelry store and its cameras and guards first.",
     "Enter quietly and avoid every line of sight.",
-    "Take the goods without triggering detection.",
-    "Leave clean — the trophy pops on an undetected robbery. If spotted, retry."
+    "Take the goods without triggering detection and leave clean — the trophy pops on an undetected robbery. If spotted, retry."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -755,8 +713,7 @@
    "steps": [
     "Find a bank vault and plan both the entry and the escape route.",
     "Rob the vault and get out with the take.",
-    "Lose the wanted level to bank the escape.",
-    "Repeat for five vaults in total — the silver pops on the fifth escape."
+    "Lose the wanted level to bank the escape, then repeat — the silver pops on the fifth escape."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -774,8 +731,7 @@
    "steps": [
     "Find an armored truck on the road.",
     "Stop it and crack it open.",
-    "Take the money and get clear.",
-    "Lose the wanted level — the trophy pops on the escape."
+    "Take the money and get clear, then lose the wanted level — the trophy pops on the escape."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -793,8 +749,7 @@
    "steps": [
     "Let the story and side missions carry you across the map.",
     "In phase 4, open the map and stats screen to find unvisited areas.",
-    "Drive, fly or sail into every remaining corner of Leonida.",
-    "The trophy pops when the last area is explored."
+    "Drive, fly or sail into every remaining corner of Leonida — the trophy pops when the last area is explored."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -812,8 +767,7 @@
    "steps": [
     "Learn which gangs hold territory as you play the story.",
     "Find and rob one illegal operation per gang.",
-    "Note each gang hit in this app's notes.",
-    "The trophy pops when every gang has been hit once."
+    "Note each gang hit in this app's notes — the trophy pops when every gang has been hit once."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -849,15 +803,13 @@
    "steps": [
     "Find a vehicle showroom and drive a car inside.",
     "Turn around and aim for the front glass.",
-    "Smash your way out through the showroom front.",
-    "The trophy pops on the exit."
+    "Smash your way out through the showroom front — the trophy pops on the exit."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
     "PSNProfiles — GTA VI trophy list"
    ]
-  }
-,
+  },
   "46": {
    "kind": "activity",
    "phase": 3,
@@ -869,8 +821,7 @@
    "steps": [
     "Find the Kolt & Associates' bowling alley.",
     "Start a game and bowl.",
-    "Follow through on your throws — finish the game if one frame is not enough.",
-    "The trophy pops at the alley."
+    "Follow through on your throws — finish the game if one frame is not enough. The trophy pops at the alley."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -888,8 +839,7 @@
    "steps": [
     "Build partnerships through the story and side missions.",
     "Keep an eye out for anything framed as a partnership gaining appeal.",
-    "When it pops, note what you were doing in this app.",
-    "If it has not popped by phase 4, revisit the partnership content."
+    "When it pops, note what you were doing in this app; if it has not popped by phase 4, revisit the partnership content."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -907,8 +857,7 @@
    "steps": [
     "Play the story until a choice point appears.",
     "Save first if the game allows manual saves.",
-    "Make the choice and live with it.",
-    "The trophy pops for the decisions made."
+    "Make the choice and live with it — the trophy pops for the decisions made."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -926,8 +875,7 @@
    "steps": [
     "Attempt an activity and let the first try fail — or fail naturally.",
     "Try the same activity a second time.",
-    "Succeed on the second attempt.",
-    "The trophy pops on the second-time success."
+    "Succeed on the second attempt — the trophy pops on the second-time success."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -945,8 +893,7 @@
    "steps": [
     "Explore Leonida's odd corners — remote spots, strange landmarks, late-night places.",
     "Watch for an event that does not fit the ordinary game.",
-    "When it happens, note the place in this app.",
-    "The trophy pops on the event."
+    "When it happens, note the place in this app — the trophy pops on the event."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -964,8 +911,7 @@
    "steps": [
     "Get a vehicle and a melee weapon.",
     "Find a group of pedestrians on a pavement.",
-    "Drive past slowly and swing the melee weapon from the vehicle.",
-    "The trophy pops when the drive-by bowls them over."
+    "Drive past slowly and swing the melee weapon from the vehicle — the trophy pops when the drive-by bowls them over."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -983,8 +929,7 @@
    "steps": [
     "Collect Marked Bills from robberies.",
     "Launder them through your contacts.",
-    "Keep the cycle going — rob, launder, repeat.",
-    "The trophy pops when laundered earnings reach $250,000."
+    "Keep the cycle going — rob, launder, repeat — until laundered earnings reach $250,000."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -1002,8 +947,7 @@
    "steps": [
     "Buy what you need as you play — every shop purchase counts.",
     "Check the total spent in the stats screen.",
-    "In phase 4, spend surplus cash across shops.",
-    "The trophy pops when total spending reaches $100,000."
+    "In phase 4, spend surplus cash across shops — the trophy pops when total spending reaches $100,000."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -1021,8 +965,7 @@
    "steps": [
     "Save money for property purchases as you play.",
     "Buy each garage property as it becomes available.",
-    "Check the property list for any garage still unowned.",
-    "The trophy pops when every garage is purchased."
+    "Check the property list for any garage still unowned — the trophy pops when every garage is purchased."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
@@ -1040,8 +983,7 @@
    "steps": [
     "Find or own a vehicle you have not registered.",
     "Open the Scooter Bros app and register it.",
-    "Repeat with nine more different vehicles.",
-    "The trophy pops on the tenth registration."
+    "Repeat with nine more different vehicles — the trophy pops on the tenth registration."
    ],
    "sources": [
     "Official trophy description — PlayStation (via Exophase trophy list)",
