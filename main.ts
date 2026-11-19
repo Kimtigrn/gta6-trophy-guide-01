@@ -1,45 +1,36 @@
-// Leonida Legend — entry program (Node 22, standard library only).
+// Leonida Legend — hand-in program (Node 22, standard library only).
+// The guide itself is plain static files in app/ (index.html, style.css, app.js and
+// the data files), plus 3–4 screenshots in screenshots/. This program copies both
+// folders into the output directory and writes dossier.json — the summary the judge
+// reads — with the kit's vendored library. vendor/makefun-frontend.ts is the kit's
+// copy and must stay exactly as it is: the scorer rebuilds the dossier with its own
+// copy and requires the two to match byte for byte.
 //
-// Stages the guide for grading: mirrors the static app (app/) and the four
-// screenshots (screenshots/) into the output directory, then writes
-// /output/dossier.json with buildDossier from the kit's vendored library, so
-// the scorer can rebuild the identical dossier from the same files.
-// Outside the grader, MAKEFUN_OUTPUT_DIR stands in for /output.
-import { buildDossier } from './vendor/makefun-frontend.ts';
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+// Run it the way the grader does:  mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
+// (outside the grader, MAKEFUN_OUTPUT_DIR stands in for /output).
 
-// The competition's own gate caps, as the dossier builder needs them: text
-// at most 163,840 bytes, 3-4 screenshots of at most 256 KiB each, app/ at
-// most 993 files and 48 MiB in total.
-const TEXT_CAP = 163840;
-const SHOT_CAP = { max: 4, max_bytes: 262144 };
-const APP_CAP = { max_files: 993, max_bytes: 50331648 };
+import { cpSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { buildDossier } from "./vendor/makefun-frontend.ts";
 
-const here = resolve(dirname(fileURLToPath(import.meta.url)));
-const target = resolve(process.env.MAKEFUN_OUTPUT_DIR ?? '/output');
+const rootDir = fileURLToPath(new URL(".", import.meta.url));
+const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
+const appDir = join(rootDir, "app");
+const shotDir = join(rootDir, "screenshots");
 
-function mirror(dirName: string): void {
-  const from = join(here, dirName);
-  const to = join(target, dirName);
-  if (!existsSync(from)) {
-    throw new Error(`main.ts: the repository has no ${dirName}/ to copy`);
-  }
-  rmSync(to, { recursive: true, force: true });
-  cpSync(from, to, { recursive: true });
-}
+mkdirSync(outDir, { recursive: true });
+cpSync(appDir, join(outDir, "app"), { recursive: true });
+mkdirSync(join(outDir, "screenshots"), { recursive: true });
+if (existsSync(shotDir)) cpSync(shotDir, join(outDir, "screenshots"), { recursive: true });
 
-mkdirSync(target, { recursive: true });
-mirror('app');
-mirror('screenshots');
-
-const dossierBytes = buildDossier(target, {
-  text_max_bytes: TEXT_CAP,
-  screenshots: SHOT_CAP,
-  app_max_files: APP_CAP.max_files,
-  app_max_bytes: APP_CAP.max_bytes,
+// Caps from the gate: at most 4 screenshots of 256 KiB each, app/ at most 993 files
+// and 48 MiB, and the dossier itself at most 1.5 MiB. Anything past those limits
+// makes the entry invalid, so the program refuses it here first.
+const dossier = buildDossier(outDir, {
+  text_max_bytes: 163840,
+  screenshots: { max: 4, max_bytes: 262144 },
+  app_max_files: 993,
+  app_max_bytes: 50331648,
 });
-const dossierPath = join(target, 'dossier.json');
-writeFileSync(dossierPath, dossierBytes);
-console.log(`main.ts: wrote ${dossierPath} (${dossierBytes.length} bytes)`);
+writeFileSync(join(outDir, "dossier.json"), dossier);
