@@ -7,7 +7,7 @@
    "missable_note": "",
    "target": "All 54 other trophies",
    "effort": "Long grind",
-   "guide": "The platinum pops the moment the other 54 trophies are earned — there is nothing extra to do for it. Treat it as a checklist, not a task: work the roadmap phases in order, story first and the long counts last, and the platinum arrives on its own. The Planner tab always shows what is left.",
+   "guide": "The platinum is automatic: it pops the moment the other 54 trophies are earned, with nothing extra to do for it. Treat it as a checklist, not a task — work the roadmap phases in order, story first and the long counts last, and the platinum arrives on its own. The Planner tab always shows what is left.",
    "steps": [
     "Finish the story (Chapters 1–4 and the final mission).",
     "Finish the five contact strands and the other stranger missions.",
@@ -169,7 +169,8 @@
     "Official trophy description — PlayStation (via Exophase trophy list)",
     "PSNProfiles — GTA VI trophy list"
    ]
-  },
+  }
+,
   "10": {
    "kind": "story",
    "phase": 1,
@@ -339,7 +340,8 @@
     "Official trophy description — PlayStation (via Exophase trophy list)",
     "PSNProfiles — GTA VI trophy list"
    ]
-  },
+  }
+,
   "19": {
    "kind": "activity",
    "phase": 3,
@@ -347,7 +349,7 @@
    "missable_note": "",
    "target": "Win 20 different races",
    "effort": "Medium",
-   "guide": "Earn Cash, Not Kudos wants 20 different race wins — variety is the point, so winning the same race twenty times does not count. Mix race types and locations: street races, drone races and whatever else the game offers, and keep a mental note (or a note in this app) of which races you have already won.",
+   "guide": "Earn Cash, Not Kudos wants 20 different race wins — variety is the point, so winning the same race twenty times does not count. Mix race types and locations: street races, drone races and whatever else the game offers, and keep a note in this app of which races you have already won.",
    "steps": [
     "Win races of different types — street, drone and any others offered.",
     "Win at different locations, not the same course twice.",
@@ -510,7 +512,8 @@
     "Official trophy description — PlayStation (via Exophase trophy list)",
     "PSNProfiles — GTA VI trophy list"
    ]
-  },
+  }
+,
   "28": {
    "kind": "collectible",
    "phase": 4,
@@ -682,7 +685,8 @@
     "Official trophy description — PlayStation (via Exophase trophy list)",
     "PSNProfiles — GTA VI trophy list"
    ]
-  },
+  }
+,
   "37": {
    "kind": "side",
    "phase": 2,
@@ -852,7 +856,8 @@
     "Official trophy description — PlayStation (via Exophase trophy list)",
     "PSNProfiles — GTA VI trophy list"
    ]
-  },
+  }
+,
   "46": {
    "kind": "activity",
    "phase": 3,

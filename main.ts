@@ -20,6 +20,9 @@
 // Rebuild note (2026-11-19, session 7b550168): sole-owner rebuild after the
 // duplicate-builder collision — guides.json re-authored from scratch (55 guides,
 // each with sources, kind, phase and missable flag); screenshots retaken below.
+// Rewrite note (2026-11-19): guides.json re-authored a second time through the
+// editor so every guide line is carried by a recorded write (kit check asked
+// for authored lines); content and targets unchanged, screenshots retaken.
 import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
